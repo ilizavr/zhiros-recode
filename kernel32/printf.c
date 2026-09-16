@@ -1,0 +1,58 @@
+/*
+ * Copyright (c) 2026 ilizavr
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
+
+#include "printf.h"
+#include "shell/fbcon.h"
+
+void printf(char *fmt, ...)
+{
+    va_list args;
+    va_start(args,fmt);
+
+    for(;*fmt;fmt++)
+    {
+        if(*fmt != '%'){
+            putchar(*fmt);
+            continue;
+        }
+
+        fmt++;
+        if(!*fmt) break;
+
+        switch (*fmt){
+            case 's':{
+                char *str = va_arg(args, char*);
+                if(str) print(str);
+                break;
+            }
+            case 'c':{
+                char chr = va_arg(args, char);
+                putchar(chr);
+                break;
+            }
+            case 'u':{
+                u32 num = va_arg(args, u32);
+                print_int(num);
+                break;
+            }
+            case 'x':{
+                u32 num = va_arg(args, u32);
+                print_hex(num);
+                break;
+            }
+            case '%':{
+                putchar('%');
+                break;
+            }
+            default:{
+                putchar('%');
+                putchar(*fmt);
+                break;
+            }
+        }
+
+    }
+}
