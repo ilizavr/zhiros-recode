@@ -27,45 +27,45 @@
 ## API ядра для модулей и консоли:
 ГРАФИКА
 ```c
-    _print_color(char *string, u32 color) -> None
-    _printf(...) -> None
-    _clearframe() -> None
-    _fbcon_stop() -> framebuffer_info* fb //отключается базовый графический драйвер для замены на кастомный
+_print_color(char *string, u32 color) -> None
+_printf(...) -> None
+_clearframe() -> None
+_fbcon_stop() -> framebuffer_info* fb //отключается базовый графический драйвер для замены на кастомный
 ```
 КЛАВИАТУРА
 ```c
-    _get_key_state_matrix() -> bool key[256] //возвращает массив key[keycode]=status, где status=1 когда нажата и 0 когда отпущена
-    _gets(char* string, int max_size) -> int readed //чтение с клавиатуры для консольных приложений
-    _getchar() -> char
+_get_key_state_matrix() -> bool key[256] //возвращает массив key[keycode]=status, где status=1 когда нажата и 0 когда отпущена
+_gets(char* string, int max_size) -> int readed //чтение с клавиатуры для консольных приложений
+_getchar() -> char
 ```
 ПАМЯТЬ
 ```c
-    _alloc(u32 size) -> void* buf
-    _free(void* buf) -> bool success
+_alloc(u32 size) -> void* buf
+_free(void* buf) -> bool success
 ```
 ЛИНКОВКА
 ```c
-    _resolve_function(char* name) -> void* function
-    _register_function(char *function_name, void* call, char *description) -> None
-    _register_irq(u8 n, void* function) -> None
-    _load_mod(char diskletter, char* path) -> bool success
+_resolve_function(char* name) -> void* function
+_register_function(char *function_name, void* call, char *description) -> None
+_register_irq(u8 n, void* function) -> None
+_load_mod(char diskletter, char* path) -> bool success
 ```
 ТАЙМЕР - не реализовано
 ```c
-    _hook_timer(u32 ms, void* fnc) -> None //хук таймера. аргумент - раз во сколько мс вызывать
-    _sleep_ms(u32 ms) -> None
-    _getticks(u32 ms) -> u32 ticks
+_hook_timer(u32 ms, void* fnc) -> None //хук таймера. аргумент - раз во сколько мс вызывать
+_sleep_ms(u32 ms) -> None
+_getticks(u32 ms) -> u32 ticks
 ```
 АБСТРАКЦИИ ДИСКОВ И РАЗДЕЛОВ
 ```c
-    _diskadd(struct disk* dsk) -> bool success
-    _getdisk(int idx) -> struct disk*
+_diskadd(struct disk* dsk) -> bool success
+_getdisk(int idx) -> struct disk*
 ```
 VFS
 ```c
-    _mount(struct disk* dsk, void * open_fnc) -> bool success
-    _open(char diskletter, char* path) -> struct file*
-    _mkdir(char diskletter, char* path) -> struct file*
+_mount(struct disk* dsk, void * open_fnc) -> bool success
+_open(char diskletter, char* path) -> struct file*
+_mkdir(char diskletter, char* path) -> struct file*
 ```
 
 
