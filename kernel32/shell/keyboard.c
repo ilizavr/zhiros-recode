@@ -6,7 +6,7 @@
 
 #include "keyboard.h"
 #include "../interrupt.h"
-#include "../ports.h"
+#include "../../lib/ports.h"
 #include "fbcon.h"
 
 volatile bool key_state_matrix[256] = {0};

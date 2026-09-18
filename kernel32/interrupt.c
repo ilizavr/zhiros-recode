@@ -5,7 +5,7 @@
 
 
 #include "interrupt.h"
-#include "ports.h"
+#include "../lib/ports.h"
 #include "panic.h"
 
 void pic_remap()
