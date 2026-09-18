@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-void hexdump(char *data, u32 size)
+static void hexdump(char *data, u32 size)
 {
     u8 *ptr = (u8*)data;
     const char* hex_digits= "0123456789ABCDEF";

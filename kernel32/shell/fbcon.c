@@ -5,7 +5,7 @@
 
 
 #include "fbcon.h"
-#include "font8x16.h"
+#include "../../fonts/font_6x8.h"
 #include "../allocator.h"
 
 i_ptr fb_addr;
@@ -25,10 +25,10 @@ INLINE void put_pixel(u32 x, u32 y, u32 color) {
 INLINE void put_sym(u8 sym, u32 startx, u32 starty,u32 color,u32 bgcolor)
 {
     if(stopcon) return;
-    for(int y = 0;y<16;y++)
+    for(int y = 0;y<8;y++)
     {
-        u8 font_row = font8x16[sym*16+y];
-        for(int x = 0;x<8;x++)
+        u8 font_row = font6x8[sym*8+y];
+        for(int x = 0;x<6;x++)
         {
             if(font_row&0b10000000)
                 put_pixel(startx+x,starty+y,color);
@@ -39,16 +39,19 @@ INLINE void put_sym(u8 sym, u32 startx, u32 starty,u32 color,u32 bgcolor)
         }
     }
 }
-INLINE void put_sym_nobg(u8 sym, u32 startx, u32 starty,u32 color)
+INLINE void put_sym_nobg(u8 sym, u32 startx, u32 starty, u32 color)
 {
-    if(stopcon) return;
-    for(int y = 0;y<16;y++)
+    if (stopcon) return;
+    for (int y = 0; y < 8; y++)
     {
-        u8 font_row = font8x16[sym*16+y];
-        for(int x = 7;x>=0;x--)
+        u8 font_row = font6x8[sym * 8 + y];
+        for (int x = 0; x < 6; x++)
         {
-            put_pixel(startx+x,starty+y,color*(font_row&1));
-            font_row>>=1;
+            if (font_row & 0b10000000)
+            {
+                put_pixel(startx + x, starty + y, color);
+            }
+            font_row <<= 1;
         }
     }
 }
@@ -56,16 +59,16 @@ INLINE void put_sym_nobg(u8 sym, u32 startx, u32 starty,u32 color)
 void init_fbcon(i_ptr _fb_addr, u32 _screen_width, u32 _screen_height, u32 _screen_pitch, u32 _bbp)
 {
     fb_addr = _fb_addr;
-    screen_width = _screen_width/8*8;
-    screen_height = _screen_height/16*16;
+    screen_width = _screen_width/6*6;
+    screen_height = _screen_height/8*8;
     screen_pitch = _screen_pitch;
     bpp = _bbp / 8;
 
     fb_size = screen_pitch*screen_height;
-    fb_size_withoutlastline = (screen_height-16)*screen_pitch;
-    fb_lastline_addr = fb_addr+(screen_height-16)*screen_pitch;
-    fb_onelinesize = screen_pitch*16;
-    fb_secondline_addr = fb_addr+screen_pitch*16;
+    fb_size_withoutlastline = (screen_height-8)*screen_pitch;
+    fb_lastline_addr = fb_addr+(screen_height-8)*screen_pitch;
+    fb_onelinesize = screen_pitch*8;
+    fb_secondline_addr = fb_addr+screen_pitch*8;
 }
 
 u32 curx=0, cury=0;
@@ -86,27 +89,27 @@ void roll_screen()
 void putchar_color(char chr, u32 color)
 {
     if(stopcon) return;
-    if(chr == '\n' || (curx+8)>screen_width)
+    if(chr == '\n' || (curx+6)>screen_width)
     {
-        cury+=16;
+        cury+=8;
         curx=0;
 
-        if((cury+16)>screen_height) {
+        if((cury+8)>screen_height) {
             roll_screen();
-            cury = screen_height-16;
+            cury = screen_height-8;
         }
         if(chr == '\n')return;
     }
     if(chr == '\b')
     {
-        if(curx>=8)curx-=8;
-        else if(cury>=16){curx=screen_width-8;cury-=16;}
+        if(curx>=6)curx-=6;
+        else if(cury>=8){curx=screen_width-6;cury-=8;}
         return;
     }
 
 
     put_sym_nobg(chr,curx,cury,color);
-    curx+=8;
+    curx+=6;
 }
 
 void putchar(char chr)

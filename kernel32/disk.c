@@ -18,7 +18,7 @@ bool ramdisk_read(struct disk* dsk, u32 lba, char* buffer, u32 blocks)
     if ((lba + blocks) > dsk->size) {
         return false;
     }
-    memcpy(buffer,(char*)dsk->other_info[0]+lba*512,blocks*512);
+    memcpy(buffer,dsk->other_info+lba*512,blocks*512);
     return true;
 }
 
@@ -27,7 +27,7 @@ bool ramdisk_write(struct disk* dsk, u32 lba, char* buffer, u32 blocks)
     if ((lba + blocks) > dsk->size) {
         return false;
     }
-    memcpy((char*)dsk->other_info[0]+lba*512,buffer,blocks*512);
+    memcpy(dsk->other_info+lba*512,buffer,blocks*512);
     return true;
 }
 
@@ -53,14 +53,15 @@ API struct disk* getdisk(int idx)
     return disks[idx];
 }
 
-void ramdisk_init(i_ptr modulestart, i_ptr moduleend)
+struct disk* ramdisk_init(i_ptr modulestart, i_ptr moduleend)
 {
     struct disk* newramdisk = kalloc(sizeof(struct disk)+8);
     newramdisk->lba_read = ramdisk_read;
     newramdisk->lba_write = ramdisk_write;
-    newramdisk->size = (moduleend-modulestart)/512;
+    newramdisk->size = (moduleend-modulestart)/512+1;
     newramdisk->name = "ramdisk";
-    newramdisk->other_info[0] = modulestart;
+    newramdisk->other_info = (void*)modulestart;
 
-    diskadd(newramdisk);
+    if(!diskadd(newramdisk)) return 0;
+    return newramdisk;
 }

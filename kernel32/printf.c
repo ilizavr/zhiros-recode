@@ -29,8 +29,8 @@ void printf(char *fmt, ...)
                 break;
             }
             case 'c':{
-                char chr = va_arg(args, char);
-                putchar(chr);
+                u32 chr = va_arg(args, u32);
+                putchar(chr&0xFF);
                 break;
             }
             case 'u':{

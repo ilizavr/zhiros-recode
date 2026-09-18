@@ -7,4 +7,4 @@
 
 extern API bool diskadd(struct disk* dsk);
 extern API struct disk* getdisk(int idx);
-extern void ramdisk_init(i_ptr modulestart, i_ptr moduleend);
+extern struct disk* ramdisk_init(i_ptr modulestart, i_ptr moduleend);

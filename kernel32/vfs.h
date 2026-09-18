@@ -5,5 +5,6 @@
 
 
 #include "../lib/zhirtypes.h"
-extern API bool mount(struct disk* dsk, void * open_fnc);
+extern API char mount(struct disk* dsk, void * open_fnc, void * mkdir_fnc);
 extern API struct file* open(char disk_letter,char *path);
+extern struct file* open_unstar(struct disk* dsk,char *path);

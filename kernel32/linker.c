@@ -7,6 +7,8 @@
 #include "linker.h"
 #include "shell/fbcon.h"
 #include "allocator.h"
+#include "vfs.h"
+#include "../lib/hexdump.h"
 
 PAK struct function_info
 {
@@ -51,4 +53,17 @@ void register_function(char *function_name, void* call, char *description)
 	newfnc->call = call;
 	head_fnc = newfnc;
 	restore_irq(eflags);
+}
+
+bool load_mod(char diskletter,char *name)
+{
+	struct file* mod = open(diskletter,name);
+	if(!mod){KLOGE("file %s not found",name);return false;}
+	u32 size = mod->getsize(mod);
+	if(!size){KLOGE("file %s empty",name);return false;}
+	void *module = kalloc(size);
+	mod->read(mod,module,size,0);
+
+	//hexdump(module,512);
+	CALL(module,resolve_function);
 }

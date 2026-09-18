@@ -82,5 +82,5 @@ keyboard_isr_handler:
 
 
 section .bss
-resb 8192
+resb 65536
 stack:

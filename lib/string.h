@@ -72,4 +72,37 @@ static char *strcpy(char *dest, const char *src)
         ;
     return saved;
 }
+
+static char* strcat(char* dest, const char* src) {
+    strcpy(dest+strlen(dest),src);
+    return dest;
+}
+static size_t strnlen(const char *s, size_t maxlen)
+{
+    size_t len = 0;
+    while (len < maxlen && s[len] != '\0') {
+        len++;
+    }
+    return len;
+}
+
+static char *strncat(char *dest, const char *src, size_t n)
+{
+    char *ptr = dest;
+
+    while (*ptr != '\0') {
+        ptr++;
+    }
+
+    while (n > 0 && *src != '\0') {
+        *ptr = *src;
+        ptr++;
+        src++;
+        n--;
+    }
+
+    *ptr = '\0';
+
+    return dest;
+}
 #endif

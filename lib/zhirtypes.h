@@ -1,3 +1,5 @@
+#include <stddef.h>
+#include <stdint.h>
 #ifndef ZHIRTYPES
 #define ZHIRTYPES
 
@@ -69,20 +71,24 @@ struct disk//эта же структура используется для ра
     bool (*lba_read)(struct disk* dsk, u32 lba, char* buffer, u32 blocks);
     bool (*lba_write)(struct disk* dsk, u32 lba, char* buffer, u32 blocks);
 
-    i_ptr other_info[0];
+    void* other_info;
+    void* fs_info;
 };
 
-struct mount{
-    struct disk* dsk;
-    struct file* (*open)(struct disk* disk,char *path);
-};
-
-struct file
+struct file//это также директории
 {
-    u32 (*read)(struct file* file, void* buffer, u32 size, u32 offset);
-    u32 (*write)(struct file* file, void* buffer, u32 size, u32 offset);
+    struct disk* dsk;
 
-    i_ptr other_info[0];
+    char *path;
+
+    u32 (*read)(struct file* file, void* buffer, u32 size, u32 offset);//read от директории читает имена файлов, разделенных нуль байтами(директории в таком списке имеют / в начале имени, чтобы их отличать от файлов)
+    u32 (*write)(struct file* file, void* buffer, u32 size, u32 offset);
+    u32 (*getsize)(struct file* file); //размер файла
+    bool (*close)(struct file* file);
+
+    bool is_dir;
+
+    void* other_info;
 };
 
 static const char keyboard_map[128] =
